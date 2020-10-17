@@ -1,9 +1,13 @@
 package com.udacity.pricing.service;
 
 import com.udacity.pricing.domain.price.Price;
+import com.udacity.pricing.domain.price.PriceRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -12,7 +16,11 @@ import java.util.stream.LongStream;
 /**
  * Implements the pricing service to get prices for each vehicle.
  */
+@Service
 public class PricingService {
+    
+    @Autowired
+    PriceRepository priceRepository;
 
     /**
      * Holds {ID: Price} pairings (current implementation allows for 20 vehicles)
@@ -22,6 +30,10 @@ public class PricingService {
             .mapToObj(i -> new Price("USD", randomPrice(), i))
             .collect(Collectors.toMap(Price::getVehicleId, p -> p));
 
+    public List<Price> getAllPrices() {
+        return (List<Price>) priceRepository.findAll();
+    }
+    
     /**
      * If a valid vehicle ID, gets the price of the vehicle from the stored array.
      * @param vehicleId ID number of the vehicle the price is requested for.
